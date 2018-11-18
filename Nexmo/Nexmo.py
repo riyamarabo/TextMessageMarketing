@@ -1,37 +1,36 @@
-import nexmo
+import pandas as pd
 
-client = nexmo.Client(key='null', secret='null')
+df = pd.read_csv('customers.csv', usecols=['mobile']).values.tolist()
 
-phones = [16197295998, 16198887517]
+phones = []
 
-for numbers in phones:
-    for trials in range(1, 101):
-        text = "test: " + str(trials)
+for number in df:
+    phones.append(number)
 
-        client.send_message({
-            'from': '18665207093',
-            'to': numbers,
-            'text': text,
-        })
-        print(numbers, ": ", text)
+# import nexmo
+#
+# client = nexmo.Client(key='null', secret='null')
+
+# for numbers in phones:
+#
+#     client.send_message({
+#         'from': '18665207093',
+#         'to': numbers,
+#         'text': "testing number upload from csv",
+#     })
 
 
 
 import plivo
 
-phones = [16197295998, 16198887517]
-
 client = plivo.RestClient('null', 'null')
 
 for numbers in phones:
-    for trials in range(1, 101):
-        text = "test: " + str(trials)
-        try:
-            response = client.messages.create(
-                src='18553653838',
-                dst=numbers,
-                text=text,
-            )
-            print(numbers, ": ", text)
-        except plivo.exceptions.PlivoRestError as e:
-            print("exception printed")
+    try:
+        response = client.messages.create(
+            src='18553653838',
+            dst=numbers[0],
+            text="Your blast message here",
+        )
+    except plivo.exceptions.PlivoRestError as e:
+        print(e)
